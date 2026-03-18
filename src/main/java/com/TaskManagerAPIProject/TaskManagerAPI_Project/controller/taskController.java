@@ -2,9 +2,13 @@ package com.TaskManagerAPIProject.TaskManagerAPI_Project.controller;
 
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.taskService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.server.csrf.CsrfToken;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +18,6 @@ public class taskController {
     @Autowired
     private taskService service;
 
-
     @GetMapping("task")
     public ResponseEntity<List<Task>> getAllTask(){
         List<Task> tasks = service.getAllTask();
@@ -22,7 +25,8 @@ public class taskController {
     }
 
     @GetMapping("task/{id}")
-    public ResponseEntity<Task> getTask(@PathVariable int id){
+    public ResponseEntity<?> getTask(@PathVariable int id){
+
         Task task = service.getTask(id);
         return ResponseEntity.ok(task);
     }
