@@ -1,5 +1,6 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.service;
 
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.PasswordDecryptAndEncrypt;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.UserRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.user;
 import lombok.Setter;
@@ -18,12 +19,16 @@ public class userService {
     @Autowired
     private UserRepo repo;
 
+
+
     public List<user> ViewAllUsers() {
         return repo.findAll();
 
     }
 
     public void RegisterUser(user user) {
+        user.setPassword(new PasswordDecryptAndEncrypt().passwordEncoder(user.getPassword()));
+        System.out.println(user.getPassword());
         repo.save(user);
     }
 
