@@ -3,13 +3,13 @@ package com.TaskManagerAPIProject.TaskManagerAPI_Project.service;
 
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.taskRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.dto.response.TaskTitleAndDecsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,6 +18,7 @@ public class taskService {
     private taskRepo repo;
 
     public List<Task> getAllTask(){
+
         return repo.findAll(Sort.by("id").ascending());
     }
 
@@ -33,7 +34,7 @@ public class taskService {
         if(task.getId() != null)
         {
             repo.findById(task.getId())
-                    .orElseThrow(() -> new RuntimeException("task not found with id" + task.getId()));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"task not found with id" + task.getId()));
         }
 
          repo.save(task);

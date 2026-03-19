@@ -25,7 +25,7 @@ public class userController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> RegisterUser(@RequestBody user user){
+    public ResponseEntity<String> RegisterUser(@RequestBody user user) {
         service.RegisterUser(user);
         return new ResponseEntity<>("Registered", HttpStatus.OK);
     }

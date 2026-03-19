@@ -3,13 +3,10 @@ package com.TaskManagerAPIProject.TaskManagerAPI_Project.service;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.PasswordDecryptAndEncrypt;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.UserRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.user;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,8 +24,12 @@ public class userService {
     }
 
     public void RegisterUser(user user) {
+        if(repo.findByUsername(user.getUsername()) != null)
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "username already exists");
+        }
+
         user.setPassword(new PasswordDecryptAndEncrypt().passwordEncoder(user.getPassword()));
-        System.out.println(user.getPassword());
         repo.save(user);
     }
 
