@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow — API Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+          --navy:       #080e1f;
+          --navy-mid:   #0f1a30;
+          --navy-soft:  #162038;
+          --navy-border:#1e2d4a;
+          --blue:       #3b7dff;
+          --blue-glow:  rgba(59,125,255,0.22);
+          --blue-dim:   rgba(59,125,255,0.12);
+          --surface:    #ffffff;
+          --surface-2:  #f5f7fc;
+          --surface-3:  #eef1f8;
+          --text:       #0e1726;
+          --muted:      #687594;
+          --border:     #dce3f0;
+          --high-bg:    #fff0f0; --high-text:#c0292e; --high-dot:#e53935;
+          --med-bg:     #fff8ec; --med-text: #b06a00; --med-dot: #f59e0b;
+          --low-bg:     #edfaf3; --low-text: #1a6e42; --low-dot: #22c55e;
+          --none-bg:    #f2f4fa; --none-text:#5a6a87; --none-dot: #94a3b8;
+          --danger:     #e53935;
+          --success:    #1a8a50;
+          --radius:     14px;
+          --radius-lg:  20px;
+          --sidebar-w:  280px;
+          --transition: 0.18s cubic-bezier(.4,0,.2,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          background: var(--surface-2);
+          color: var(--text);
+          min-height: 100vh;
+          display: flex;
+          overflow-x: hidden;
+        }
+
+        /* ─── SIDEBAR ──────────────────────────────────────────── */
+        .sidebar {
+          width: var(--sidebar-w);
+          min-height: 100vh;
+          background: var(--navy);
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          overflow-y: auto;
+        }
+
+        .sidebar-logo {
+          padding: 28px 24px 20px;
+          border-bottom: 1px solid var(--navy-border);
+        }
+
+        .logo-mark {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .logo-icon {
+          width: 34px;
+          height: 34px;
+          background: var(--blue);
+          border-radius: 9px;
+          display: grid;
+          place-items: center;
+          box-shadow: 0 0 18px var(--blue-glow);
+        }
+
+        .logo-icon svg { display: block; }
+
+        .logo-name {
+          font-family: 'Sora', sans-serif;
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: -0.03em;
+        }
+
+        .logo-sub {
+          font-size: 0.72rem;
+          color: rgba(255,255,255,0.35);
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+        }
+
+        .sidebar-section {
+          padding: 24px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .sidebar-label {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.28);
+          margin-bottom: 10px;
+        }
+
+        /* ─── SIDEBAR INPUTS ──────────────────────────────────── */
+        .field-group { display: flex; flex-direction: column; gap: 12px; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+
+        .field-label {
+          font-size: 0.77rem;
+          font-weight: 600;
+          color: rgba(255,255,255,0.45);
+          letter-spacing: 0.02em;
+        }
+
+        .field input,
+        .field select {
+          font-family: inherit;
+          font-size: 0.9rem;
+          background: var(--navy-soft);
+          border: 1px solid var(--navy-border);
+          color: rgba(255,255,255,0.9);
+          border-radius: 10px;
+          padding: 10px 13px;
+          width: 100%;
+          transition: border-color var(--transition), box-shadow var(--transition);
+          outline: none;
+        }
+
+        .field input::placeholder { color: rgba(255,255,255,0.22); }
+
+        .field input:focus,
+        .field select:focus {
+          border-color: rgba(59,125,255,0.6);
+          box-shadow: 0 0 0 3px rgba(59,125,255,0.15);
+        }
+
+        .field input[type="date"]::-webkit-calendar-picker-indicator {
+          filter: invert(0.4);
+          cursor: pointer;
+        }
+
+        .field select option {
+          background: var(--navy-mid);
+          color: #fff;
+        }
+
+        /* ─── SIDEBAR DIVIDER ───────────────────────────────────── */
+        .s-divider {
+          height: 1px;
+          background: var(--navy-border);
+        }
+
+        /* ─── BUTTONS ────────────────────────────────────────────── */
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+          font-family: inherit;
+          font-size: 0.875rem;
+          font-weight: 600;
+          border: none;
+          border-radius: 10px;
+          padding: 10px 16px;
+          cursor: pointer;
+          transition: transform var(--transition), box-shadow var(--transition), background var(--transition), opacity var(--transition);
+          white-space: nowrap;
+        }
+
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+
+        .btn-primary {
+          background: var(--blue);
+          color: #fff;
+          box-shadow: 0 4px 14px rgba(59,125,255,0.35);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(59,125,255,0.45); }
+
+        .btn-outline {
+          background: var(--blue-dim);
+          color: var(--blue);
+          border: 1px solid rgba(59,125,255,0.3);
+        }
+        .btn-outline:hover { background: rgba(59,125,255,0.2); box-shadow: 0 4px 14px rgba(59,125,255,0.18); }
+
+        .btn-ghost {
+          background: rgba(59,125,255,0.15);
+          color: #7aaaff;
+          border: 1px solid rgba(59,125,255,0.3);
+        }
+        .btn-ghost:hover { background: rgba(59,125,255,0.25); color: #aac6ff; }
+
+        .btn-danger {
+          background: rgba(59,125,255,0.12);
+          color: #7aaaff;
+          border: 1px solid rgba(59,125,255,0.25);
+        }
+        .btn-danger:hover { background: rgba(59,125,255,0.22); color: #aac6ff; }
+
+        .btn-sm { padding: 7px 13px; font-size: 0.82rem; }
+
+        .btn-block { width: 100%; }
+
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* ─── TOAST / MESSAGE ────────────────────────────────────── */
+        .toast {
+          display: none;
+          align-items: flex-start;
+          gap: 10px;
+          padding: 11px 14px;
+          border-radius: 10px;
+          font-size: 0.83rem;
+          font-weight: 500;
+          line-height: 1.5;
+          animation: fadeSlide 0.22s ease;
+        }
+
+        @keyframes fadeSlide {
+          from { opacity: 0; transform: translateY(-4px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success {
+          background: rgba(34,197,94,0.12);
+          color: #4ade80;
+          border: 1px solid rgba(34,197,94,0.22);
+        }
+
+        .toast.error {
+          background: rgba(229,57,53,0.12);
+          color: #ff7b78;
+          border: 1px solid rgba(229,57,53,0.22);
+        }
+
+        .toast-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          flex-shrink: 0;
+          margin-top: 5px;
+        }
+
+        .toast.success .toast-dot { background: #4ade80; }
+        .toast.error   .toast-dot { background: #ff7b78; }
+
+        /* ─── MAIN ───────────────────────────────────────────────── */
+        .main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
+
+        /* ─── TOPBAR ─────────────────────────────────────────────── */
+        .topbar {
+          background: var(--surface);
+          border-bottom: 1px solid var(--border);
+          padding: 0 36px;
+          height: 64px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+
+        .topbar-left { display: flex; flex-direction: column; }
+
+        .topbar-title {
+          font-family: 'Sora', sans-serif;
+          font-size: 1rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: var(--text);
+        }
+
+        .topbar-sub {
+          font-size: 0.78rem;
+          color: var(--muted);
+        }
+
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+        .status-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 11px;
+          background: var(--surface-3);
+          border: 1px solid var(--border);
+          border-radius: 999px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: var(--muted);
+        }
+
+        .status-chip::before {
+          content: '';
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--blue);
+          box-shadow: 0 0 6px var(--blue);
+        }
+
+        /* ─── WORKSPACE ──────────────────────────────────────────── */
+        .workspace {
+          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+
+        /* ─── EDITOR PANEL ───────────────────────────────────────── */
+        .editor-panel {
+          background: var(--surface);
+          border-bottom: 1px solid var(--border);
+          padding: 28px 36px;
+        }
+
+        .panel-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 22px;
+        }
+
+        .panel-heading {
+          font-family: 'Sora', sans-serif;
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: var(--text);
+        }
+
+        .panel-tag {
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--muted);
+          background: var(--surface-3);
+          padding: 4px 10px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+        }
+
+        .editor-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr 200px 180px;
+          gap: 14px;
+          align-items: end;
+        }
+
+        .input-field { display: flex; flex-direction: column; gap: 6px; }
+
+        .input-label {
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: var(--muted);
+          letter-spacing: 0.01em;
+        }
+
+        .input-label span {
+          display: inline-block;
+          font-size: 0.68rem;
+          font-weight: 500;
+          background: var(--surface-3);
+          color: var(--muted);
+          padding: 1px 6px;
+          border-radius: 5px;
+          margin-left: 4px;
+        }
+
+        .input-field input,
+        .input-field select,
+        .input-field textarea {
+          font-family: inherit;
+          font-size: 0.9rem;
+          background: var(--surface-2);
+          border: 1px solid var(--border);
+          color: var(--text);
+          border-radius: var(--radius);
+          padding: 10px 13px;
+          width: 100%;
+          transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+          outline: none;
+        }
+
+        .input-field input:focus,
+        .input-field select:focus,
+        .input-field textarea:focus {
+          border-color: var(--blue);
+          box-shadow: 0 0 0 3px var(--blue-dim);
+          background: var(--surface);
+        }
+
+        .input-field input::placeholder,
+        .input-field textarea::placeholder { color: #aab4c8; }
+
+        .editor-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 16px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border);
+        }
+
+        .id-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 14px;
+          padding: 10px 14px;
+          background: var(--surface-2);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+        }
+
+        .id-row-label {
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: var(--muted);
+          flex-shrink: 0;
+        }
+
+        .id-row input {
+          font-family: inherit;
+          font-size: 0.88rem;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: var(--text);
+          flex: 1;
+          min-width: 0;
+        }
+
+        /* ─── RESULTS ─────────────────────────────────────────────── */
+        .results-panel { padding: 28px 36px; flex: 1; }
+
+        .results-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 22px;
+        }
+
+        .results-heading {
+          font-family: 'Sora', sans-serif;
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+
+        .task-count {
+          font-size: 0.78rem;
+          color: var(--muted);
+          margin-top: 2px;
+        }
+
+        /* ─── TASK GRID ──────────────────────────────────────────── */
+        .task-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          gap: 14px;
+        }
+
+        .task-card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          padding: 18px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+          animation: cardIn 0.28s ease both;
+        }
+
+        @keyframes cardIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-card:hover {
+          box-shadow: 0 8px 28px rgba(15,23,50,0.09);
+          transform: translateY(-2px);
+          border-color: #c8d5ea;
+        }
+
+        .card-top {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .card-title {
+          font-family: 'Sora', sans-serif;
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          line-height: 1.3;
+          color: var(--text);
+        }
+
+        .priority-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 3px 9px;
+          border-radius: 999px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          flex-shrink: 0;
+        }
+
+        .priority-badge::before {
+          content: '';
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+        }
+
+        .p-high   { background: var(--high-bg); color: var(--high-text); }
+        .p-high::before   { background: var(--high-dot); }
+        .p-medium { background: var(--med-bg);  color: var(--med-text); }
+        .p-medium::before { background: var(--med-dot); }
+        .p-low    { background: var(--low-bg);  color: var(--low-text); }
+        .p-low::before    { background: var(--low-dot); }
+        .p-default{ background: var(--none-bg); color: var(--none-text); }
+        .p-default::before{ background: var(--none-dot); }
+
+        .card-desc {
+          font-size: 0.87rem;
+          color: var(--muted);
+          line-height: 1.6;
+          flex: 1;
+        }
+
+        .card-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 10px;
+          border-top: 1px solid var(--border);
+        }
+
+        .card-due {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 0.78rem;
+          color: var(--muted);
+          font-weight: 500;
+        }
+
+        .card-id {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: var(--blue);
+          background: var(--blue-dim);
+          padding: 3px 8px;
+          border-radius: 6px;
+        }
+
+        /* ─── EMPTY STATE ────────────────────────────────────────── */
+        .empty-state {
+          grid-column: 1/-1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 40px;
+          gap: 12px;
+          color: var(--muted);
+          text-align: center;
+        }
+
+        .empty-icon {
+          width: 52px;
+          height: 52px;
+          background: var(--surface-3);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          display: grid;
+          place-items: center;
+          margin-bottom: 6px;
+        }
+
+        .empty-title {
+          font-family: 'Sora', sans-serif;
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #8898b0;
+        }
+
+        .empty-sub { font-size: 0.83rem; max-width: 280px; }
+
+        /* ─── RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 900px) {
+          body { flex-direction: column; }
+          .sidebar { width: 100%; min-height: auto; height: auto; position: static; }
+          .editor-grid { grid-template-columns: 1fr 1fr; }
+          .topbar { padding: 0 20px; }
+          .editor-panel, .results-panel { padding: 20px; }
+        }
+
+        @media (max-width: 560px) {
+          .editor-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-mark">
+            <div class="logo-icon">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <rect x="2" y="2" width="6" height="6" rx="2" fill="white" opacity="0.9"/>
+                    <rect x="10" y="2" width="6" height="6" rx="2" fill="white" opacity="0.6"/>
+                    <rect x="2" y="10" width="6" height="6" rx="2" fill="white" opacity="0.6"/>
+                    <rect x="10" y="10" width="6" height="6" rx="2" fill="white" opacity="0.3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="logo-name">TaskFlow</div>
+                <div class="logo-sub">API Workspace</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <div>
+            <div class="sidebar-label">Authentication</div>
+            <div class="field-group">
+                <div class="field">
+                    <div class="field-label">Username</div>
+                    <input id="username" type="text" placeholder="Enter username" autocomplete="username">
+                </div>
+                <div class="field">
+                    <div class="field-label">Password</div>
+                    <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+                </div>
+            </div>
+        </div>
+
+        <div id="message" class="toast"></div>
+
+        <div class="s-divider"></div>
+
+        <div>
+            <div class="sidebar-label">Task Operations</div>
+            <div class="field-group">
+                <button class="btn btn-primary btn-block" id="loadTasksBtn" type="button">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v6M4 4l3-3 3 3M2 9v3a1 1 0 001 1h8a1 1 0 001-1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Load All Tasks
+                </button>
+
+                <div class="field">
+                    <div class="field-label">Task ID — lookup / delete</div>
+                    <input id="taskIdLookup" type="number" min="1" placeholder="e.g. 12">
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-ghost" id="loadTaskByIdBtn" type="button" style="flex:1">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M9 9l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                        Fetch by ID
+                    </button>
+                    <button class="btn btn-danger" id="deleteTaskBtn" type="button">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 3.5h9M4.5 3.5V2.5a1 1 0 011-1h2a1 1 0 011 1v1M5.5 6v3.5M7.5 6v3.5M3 3.5l.7 6.5a1 1 0 001 .9h3.6a1 1 0 001-.9L10 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════ -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-title">Task Controller</div>
+            <div class="topbar-sub">Spring Boot REST API — localhost:8080</div>
+        </div>
+        <div class="topbar-right">
+            <div class="status-chip">Live</div>
+        </div>
+    </header>
+
+    <div class="workspace">
+
+        <!-- EDITOR PANEL -->
+        <section class="editor-panel">
+            <div class="panel-header">
+                <span class="panel-heading">Create or Update Task</span>
+                <span class="panel-tag">Editor</span>
+            </div>
+
+            <!-- ID row for update -->
+            <div class="id-row">
+                <span class="id-row-label">Task ID</span>
+                <input id="taskId" type="number" min="1" placeholder="Leave empty for create — or enter ID to update">
+                <button class="btn btn-outline btn-sm" id="fillFromLookupBtn" type="button">Copy from Lookup</button>
+            </div>
+
+            <div class="editor-grid">
+                <div class="input-field" style="grid-column: span 2;">
+                    <div class="input-label">Title <span>required</span></div>
+                    <input id="title" type="text" placeholder="Short, descriptive task title">
+                </div>
+
+                <div class="input-field">
+                    <div class="input-label">Priority</div>
+                    <select id="priority">
+                        <option value="">Not set</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="input-field">
+                    <div class="input-label">Due Date</div>
+                    <input id="dueDate" type="date">
+                </div>
+
+                <div class="input-field" style="grid-column: 1 / -1;">
+                    <div class="input-label">Description</div>
+                    <input id="description" type="text" placeholder="Optional details about this task">
+                </div>
+            </div>
+
+            <div class="editor-actions">
+                <button class="btn btn-primary" id="createTaskBtn" type="button">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    Create Task
+                </button>
+                <button class="btn btn-outline" id="updateTaskBtn" type="button">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 2L11 4 5 10H3V8L9 2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+                    Update Task
+                </button>
+            </div>
+        </section>
+
+        <!-- RESULTS -->
+        <section class="results-panel">
+            <div class="results-header">
+                <div>
+                    <div class="results-heading">Task Results</div>
+                    <div class="task-count" id="taskCount">—</div>
+                </div>
+                <button class="btn btn-outline btn-sm" id="clearResultsBtn" type="button">Clear</button>
+            </div>
+            <div id="results" class="task-grid">
+                <!-- empty state rendered by JS -->
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+    const messageEl  = document.getElementById("message");
+    const resultsEl  = document.getElementById("results");
+    const taskCount  = document.getElementById("taskCount");
+
+    /* ── Toast ─────────────────────────────────────── */
+    function showMessage(text, isError = false) {
+      messageEl.innerHTML = `<div class="toast-dot"></div><span>${text}</span>`;
+      messageEl.className = `toast ${isError ? "error" : "success"}`;
+      messageEl.style.display = "flex";
+      clearTimeout(messageEl._timer);
+      messageEl._timer = setTimeout(() => {
+        messageEl.style.display = "none";
+      }, 5000);
+    }
+
+    function clearMessage() {
+      messageEl.style.display = "none";
+      messageEl.textContent = "";
+    }
+
+    /* ── Auth ───────────────────────────────────────── */
+    function getCredentials() {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value;
+      if (!u || !p) throw new Error("Enter both username and password first.");
+      return "Basic " + btoa(u + ":" + p);
+    }
+
+    /* ── API helper ─────────────────────────────────── */
+    async function apiRequest(url, options = {}) {
+      clearMessage();
+      const headers = { "Authorization": getCredentials(), ...options.headers };
+      if (options.body) headers["Content-Type"] = "application/json";
+
+      const res = await fetch(url, { ...options, headers });
+      const raw = await res.text();
+      let payload;
+      try { payload = raw ? JSON.parse(raw) : null; } catch { payload = raw; }
+
+      if (!res.ok) {
+        const detail = typeof payload === "string" ? payload : JSON.stringify(payload);
+        throw new Error(`${res.status}: ${detail}`);
+      }
+      return payload;
+    }
+
+    /* ── Render helpers ─────────────────────────────── */
+    function priorityClass(p) {
+      if (!p) return "p-default";
+      const v = p.toLowerCase();
+      if (v === "high")   return "p-high";
+      if (v === "medium") return "p-medium";
+      if (v === "low")    return "p-low";
+      return "p-default";
+    }
+
+    function priorityLabel(p) { return p || "None"; }
+
+    function escapeHtml(v) {
+      return String(v ?? "")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function renderEmpty(msg = "Load tasks to see them here.") {
+      taskCount.textContent = "—";
+      resultsEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="3" y="3" width="16" height="16" rx="3" stroke="#94a3b8" stroke-width="1.4"/>
+              <path d="M7 11h8M7 7.5h4M7 14.5h5" stroke="#94a3b8" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="empty-title">No tasks yet</div>
+          <div class="empty-sub">${escapeHtml(msg)}</div>
+        </div>`;
+    }
+
+    function renderTaskCards(tasks) {
+      if (!tasks || tasks.length === 0) { renderEmpty("No tasks returned from the server."); return; }
+      taskCount.textContent = `${tasks.length} task${tasks.length !== 1 ? "s" : ""}`;
+      resultsEl.innerHTML = tasks.map((task, i) => {
+        const title   = task.title       ?? "Untitled Task";
+        const desc    = task.description ?? task.Description ?? "";
+        const priority= task.priority    ?? "";
+        const due     = task.dueDate     ?? "";
+        const pCls    = priorityClass(priority);
+        const pLbl    = priorityLabel(priority);
+        const idBadge = task.id != null ? `<span class="card-id">#${task.id}</span>` : "";
+        return `
+          <article class="task-card" style="animation-delay:${i * 0.04}s">
+            <div class="card-top">
+              <div class="card-title">${escapeHtml(title)}</div>
+              <span class="priority-badge ${pCls}">${escapeHtml(pLbl)}</span>
+            </div>
+            ${desc ? `<div class="card-desc">${escapeHtml(desc)}</div>` : ""}
+            <div class="card-footer">
+              <div class="card-due">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1.5" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 1v2M8 1v2M1 5h10" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg>
+                ${due ? escapeHtml(due) : "No due date"}
+              </div>
+              ${idBadge}
+            </div>
+          </article>`;
+      }).join("");
+    }
+
+    /* ── Form helpers ────────────────────────────────── */
+    function getTaskPayload(includeId) {
+      const payload = {
+        title:       document.getElementById("title").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        priority:    document.getElementById("priority").value || null,
+        dueDate:     document.getElementById("dueDate").value || null,
+      };
+      if (includeId) {
+        const idV = document.getElementById("taskId").value;
+        if (!idV) throw new Error("Enter a task ID before updating.");
+        payload.id = Number(idV);
+      }
+      return payload;
+    }
+
+    function fillForm(task) {
+      document.getElementById("taskId").value      = task.id          ?? "";
+      document.getElementById("title").value       = task.title       ?? "";
+      document.getElementById("description").value = task.description ?? task.Description ?? "";
+      document.getElementById("priority").value    = task.priority    ?? "";
+      document.getElementById("dueDate").value     = task.dueDate     ?? "";
+    }
+
+    /* ── Event Listeners ─────────────────────────────── */
+    document.getElementById("loadTasksBtn").addEventListener("click", async () => {
+      try {
+        const tasks = await apiRequest("http://localhost:8080/task");
+        renderTaskCards(tasks);
+        showMessage(`Loaded ${Array.isArray(tasks) ? tasks.length : 1} task(s).`);
+      } catch (e) {
+        renderEmpty("Could not load tasks — check credentials and API.");
+        showMessage(e.message, true);
+      }
+    });
+
+    document.getElementById("loadTaskByIdBtn").addEventListener("click", async () => {
+      try {
+        const id = document.getElementById("taskIdLookup").value;
+        if (!id) throw new Error("Enter a task ID in the lookup field.");
+        const task = await apiRequest(`http://localhost:8080/task/${id}`);
+        renderTaskCards([task]);
+        fillForm(task);
+        showMessage(`Task #${id} loaded and copied to the editor.`);
+      } catch (e) {
+        renderEmpty("No task loaded.");
+        showMessage(e.message, true);
+      }
+    });
+
+    document.getElementById("createTaskBtn").addEventListener("click", async () => {
+      try {
+        const payload = getTaskPayload(false);
+        const res = await apiRequest("http://localhost:8080/task", { method: "POST", body: JSON.stringify(payload) });
+        showMessage(typeof res === "string" ? res : "Task created successfully.");
+        document.getElementById("loadTasksBtn").click();
+      } catch (e) { showMessage(e.message, true); }
+    });
+
+    document.getElementById("updateTaskBtn").addEventListener("click", async () => {
+      try {
+        const payload = getTaskPayload(true);
+        const res = await apiRequest("http://localhost:8080/task", { method: "PUT", body: JSON.stringify(payload) });
+        showMessage(typeof res === "string" ? res : "Task updated successfully.");
+        document.getElementById("loadTasksBtn").click();
+      } catch (e) { showMessage(e.message, true); }
+    });
+
+    document.getElementById("deleteTaskBtn").addEventListener("click", async () => {
+      try {
+        const id = document.getElementById("taskIdLookup").value;
+        if (!id) throw new Error("Enter a task ID before deleting.");
+        const res = await apiRequest(`http://localhost:8080/task/${id}`, { method: "DELETE" });
+        showMessage(typeof res === "string" ? res : `Task #${id} deleted.`);
+        document.getElementById("loadTasksBtn").click();
+      } catch (e) { showMessage(e.message, true); }
+    });
+
+    document.getElementById("fillFromLookupBtn").addEventListener("click", () => {
+      const id = document.getElementById("taskIdLookup").value;
+      if (id) {
+        document.getElementById("taskId").value = id;
+        showMessage("Lookup ID copied to the editor.");
+      } else {
+        showMessage("Enter a lookup ID first.", true);
+      }
+    });
+
+    document.getElementById("clearResultsBtn").addEventListener("click", () => {
+      renderEmpty();
+      clearMessage();
+    });
+
+    /* Init */
+    renderEmpty();
+</script>
+</body>
+</html>

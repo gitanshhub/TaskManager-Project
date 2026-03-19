@@ -1,6 +1,8 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.controller;
 
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.dto.response.TaskTitleAndDecsResponse;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.DtoService;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.taskService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +20,13 @@ public class taskController {
     @Autowired
     private taskService service;
 
+    @Autowired
+    private DtoService DtoService;
+
+
     @GetMapping("task")
-    public ResponseEntity<List<Task>> getAllTask(){
-        List<Task> tasks = service.getAllTask();
+    public ResponseEntity<List<TaskTitleAndDecsResponse>> getAllTask(){
+        List<TaskTitleAndDecsResponse> tasks = DtoService.getAllTask();
         return ResponseEntity.ok(tasks);
     }
 
