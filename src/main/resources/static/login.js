@@ -89,7 +89,8 @@
 
     async function tryLogin(username, password) {
         const authHeader = "Basic " + btoa(username + ":" + password);
-        const response = await fetch("/task", {
+        const normalizedUsername = username.trim().toLowerCase();
+        const response = await fetch(`/task?username=${encodeURIComponent(normalizedUsername)}`, {
             headers: {
                 Authorization: authHeader
             }
@@ -101,7 +102,7 @@
         }
 
         sessionStorage.setItem("taskflow.auth", authHeader);
-        sessionStorage.setItem("taskflow.user", username);
+        sessionStorage.setItem("taskflow.user", normalizedUsername);
     }
 
     async function registerUser(username, password) {

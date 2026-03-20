@@ -1,9 +1,12 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -19,6 +22,10 @@ public class user {
     @Column(unique = true, nullable = false)
     private String username;
     private String password;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "assignedTo")
+    private List<Task> tasks;
 
 
 

@@ -22,9 +22,9 @@ public class taskController {
     private DtoService DtoService;
 
 
-    @GetMapping("task")
-    public ResponseEntity<List<TaskTitleAndDecsResponse>> getAllTask(){
-        List<TaskTitleAndDecsResponse> tasks = DtoService.getAllTask();
+    @GetMapping("/task")
+    public ResponseEntity<List<TaskTitleAndDecsResponse>> getAllTask(@RequestParam String username){
+        List<TaskTitleAndDecsResponse> tasks = service.getAllTask(username);
         return ResponseEntity.ok(tasks);
     }
 
@@ -36,8 +36,8 @@ public class taskController {
     }
 
     @PostMapping("/task")
-    public ResponseEntity<String> insertTask(@RequestBody Task task){
-        service.updateOrInsertTask(task);
+    public ResponseEntity<String> insertTask(@RequestBody Task task, @RequestParam String username ){
+        service.InsertTask(task, username);
         return new ResponseEntity<>("Inserted", HttpStatus.CREATED);
     }
 

@@ -14,9 +14,10 @@ import java.util.List;
 public class userService {
 
     @Autowired
-    private UserRepo repo;
+    private  UserRepo repo;
+    @Autowired
+    private  PasswordDecryptAndEncrypt passwordDecryptAndEncrypt = new PasswordDecryptAndEncrypt();
 
-    private PasswordDecryptAndEncrypt passwordDecryptAndEncrypt;
 
 
     public List<user> ViewAllUsers() {
@@ -25,6 +26,8 @@ public class userService {
     }
 
     public void RegisterUser(user user) {
+        user.setUsername(user.getUsername().trim().toLowerCase());
+
         if(repo.findByUsername(user.getUsername()) != null)
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists. Please choose another one.");

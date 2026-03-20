@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public record TaskTitleAndDecsResponse(
         String title,
-        String Description,
+        String description,
         String priority,
         LocalDate dueDate
 ) {

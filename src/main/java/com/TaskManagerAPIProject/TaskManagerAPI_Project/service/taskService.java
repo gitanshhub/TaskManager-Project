@@ -1,11 +1,12 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.service;
 
 
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.UserRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.taskRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.dto.response.TaskTitleAndDecsResponse;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.user;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,17 +15,33 @@ import java.util.List;
 
 @Service
 public class taskService {
+
     @Autowired
-    private taskRepo repo;
+    private taskRepo taskRepo;
 
-    public List<Task> getAllTask(){
+    @Autowired
+    private UserRepo userRepo;
 
-        return repo.findAll(Sort.by("id").ascending());
+    public List<TaskTitleAndDecsResponse> getAllTask(String username){
+        return taskRepo.findByAssignedToUsername(username.trim().toLowerCase());
     }
 
     public Task getTask(int id){
-            return repo.findById(id)
+            return taskRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+    public void InsertTask(Task task, String username){
+        user assignUser = userRepo.findByUsername(username.trim().toLowerCase());
+
+        if(assignUser == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        task.setAssignedTo(assignUser);
+
+        taskRepo.save(task);
 
     }
 
@@ -33,18 +50,18 @@ public class taskService {
         // This check is for when updating the task.
         if(task.getId() != null)
         {
-            repo.findById(task.getId())
+            taskRepo.findById(task.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"task not found with id" + task.getId()));
         }
 
-         repo.save(task);
+         taskRepo.save(task);
     }
 
 
     public void deleteTask(int id){
-        repo.findById(id)
+        taskRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        repo.deleteById(id);
+        taskRepo.deleteById(id);
 
     }
 }

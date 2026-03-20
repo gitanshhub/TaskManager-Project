@@ -224,7 +224,7 @@
         setButtonLoading(loadTasksBtn, true, "Loading...");
 
         try {
-            const tasks = await apiRequest("/task", {});
+            const tasks = await apiRequest(`/task?username=${encodeURIComponent(currentUser)}`, {});
             renderTasks(tasks);
             showMessage("Tasks loaded successfully.", false);
         } catch (error) {
@@ -244,7 +244,7 @@
         try {
             setButtonLoading(submitButton, true, "Creating...");
             const payload = getCreatePayload();
-            await apiRequest("/task", {
+            await apiRequest(`/task?username=${encodeURIComponent(currentUser)}`, {
                 method: "POST",
                 body: JSON.stringify(payload)
             });
