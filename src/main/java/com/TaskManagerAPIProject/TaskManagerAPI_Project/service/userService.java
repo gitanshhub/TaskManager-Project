@@ -16,6 +16,7 @@ public class userService {
     @Autowired
     private UserRepo repo;
 
+    private PasswordDecryptAndEncrypt passwordDecryptAndEncrypt;
 
 
     public List<user> ViewAllUsers() {
@@ -26,10 +27,10 @@ public class userService {
     public void RegisterUser(user user) {
         if(repo.findByUsername(user.getUsername()) != null)
         {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "username already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists. Please choose another one.");
         }
 
-        user.setPassword(new PasswordDecryptAndEncrypt().passwordEncoder(user.getPassword()));
+        user.setPassword(passwordDecryptAndEncrypt.passwordEncoder(user.getPassword()));
         repo.save(user);
     }
 

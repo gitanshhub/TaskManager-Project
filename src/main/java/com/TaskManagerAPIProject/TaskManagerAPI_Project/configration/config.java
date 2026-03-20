@@ -42,7 +42,7 @@ public class config {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/", "/index.html", "/task-ui.html").permitAll()
+                                .requestMatchers("/", "/index.html", "/task-ui.html", "/styles.css", "/login.js", "/app.js").permitAll()
                                 .requestMatchers("/register").permitAll()
                                 .anyRequest().authenticated()
                 )

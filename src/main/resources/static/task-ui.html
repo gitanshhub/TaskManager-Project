@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="dashboard-body">
+<main class="dashboard-shell">
+    <header class="dashboard-topbar">
+        <div>
+            <div class="section-eyebrow">TaskFlow Dashboard</div>
+            <h1>Task management workspace</h1>
+            <p class="topbar-copy">View every task after login and manage each action in its own professional section.</p>
+        </div>
+
+        <div class="topbar-actions">
+            <div class="user-pill">
+                <span class="user-pill-label">Signed in as</span>
+                <strong id="currentUser">User</strong>
+            </div>
+            <button id="logoutBtn" type="button" class="secondary-btn">Logout</button>
+        </div>
+    </header>
+
+    <section class="dashboard-grid">
+        <aside class="control-panel">
+            <article class="panel-card">
+                <div class="card-header">
+                    <div>
+                        <div class="section-eyebrow">Tasks</div>
+                        <h2>All tasks</h2>
+                    </div>
+                    <button id="loadTasksBtn" type="button" class="primary-btn">Refresh</button>
+                </div>
+                <p class="card-copy">Load the latest task list from the API and review everything in one place.</p>
+            </article>
+
+            <article class="panel-card">
+                <div class="card-header">
+                    <div>
+                        <div class="section-eyebrow">Create</div>
+                        <h2>Create a task</h2>
+                    </div>
+                </div>
+                <form id="createTaskForm" class="form-stack">
+                    <label class="input-stack">
+                        <span>Title</span>
+                        <input id="createTitle" type="text" placeholder="Prepare sprint summary" required>
+                    </label>
+                    <label class="input-stack">
+                        <span>Description</span>
+                        <textarea id="createDescription" rows="3" placeholder="Add task details"></textarea>
+                    </label>
+                    <div class="dual-field">
+                        <label class="input-stack">
+                            <span>Priority</span>
+                            <select id="createPriority">
+                                <option value="">Not set</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </label>
+                        <label class="input-stack">
+                            <span>Due date</span>
+                            <input id="createDueDate" type="date">
+                        </label>
+                    </div>
+                    <button type="submit" class="primary-btn wide-btn">Create task</button>
+                </form>
+            </article>
+
+            <article class="panel-card">
+                <div class="card-header">
+                    <div>
+                        <div class="section-eyebrow">Update</div>
+                        <h2>Update a task</h2>
+                    </div>
+                    <button id="fetchTaskBtn" type="button" class="secondary-btn">Fetch by ID</button>
+                </div>
+                <form id="updateTaskForm" class="form-stack">
+                    <label class="input-stack">
+                        <span>Task ID</span>
+                        <input id="updateTaskId" type="number" min="1" placeholder="Enter task ID" required>
+                    </label>
+                    <label class="input-stack">
+                        <span>Title</span>
+                        <input id="updateTitle" type="text" placeholder="Task title" required>
+                    </label>
+                    <label class="input-stack">
+                        <span>Description</span>
+                        <textarea id="updateDescription" rows="3" placeholder="Task description"></textarea>
+                    </label>
+                    <div class="dual-field">
+                        <label class="input-stack">
+                            <span>Priority</span>
+                            <select id="updatePriority">
+                                <option value="">Not set</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </label>
+                        <label class="input-stack">
+                            <span>Due date</span>
+                            <input id="updateDueDate" type="date">
+                        </label>
+                    </div>
+                    <button type="submit" class="primary-btn wide-btn">Update task</button>
+                </form>
+            </article>
+
+            <article class="panel-card danger-card">
+                <div class="card-header">
+                    <div>
+                        <div class="section-eyebrow">Delete</div>
+                        <h2>Delete a task</h2>
+                    </div>
+                </div>
+                <form id="deleteTaskForm" class="form-stack">
+                    <label class="input-stack">
+                        <span>Task ID</span>
+                        <input id="deleteTaskId" type="number" min="1" placeholder="Enter task ID to remove" required>
+                    </label>
+                    <button type="submit" class="danger-btn wide-btn">Delete task</button>
+                </form>
+            </article>
+        </aside>
+
+        <section class="results-panel">
+            <div class="results-toolbar">
+                <div>
+                    <div class="section-eyebrow">Overview</div>
+                    <h2>Task list</h2>
+                    <p id="taskCount" class="results-copy">No tasks loaded yet.</p>
+                </div>
+                <div id="dashboardMessage" class="inline-message compact-message" aria-live="polite"></div>
+            </div>
+
+            <div id="results" class="task-grid"></div>
+        </section>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
