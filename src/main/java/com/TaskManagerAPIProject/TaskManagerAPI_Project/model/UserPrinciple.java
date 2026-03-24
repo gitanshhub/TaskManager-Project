@@ -23,13 +23,6 @@ public class UserPrinciple implements UserDetails {
         return user.getRole().stream().map(role ->
                         new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .collect(Collectors.toList());
-
-//        if(user.getRole() == null){
-//            return List.of();
-//        }
-//        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
-
-//        return Collections.singleton(new SimpleGrantedAuthority("USER"));
     }
 
     @Override
