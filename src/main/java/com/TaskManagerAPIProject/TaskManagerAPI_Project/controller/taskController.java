@@ -1,8 +1,8 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.controller;
 
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.dto.TaskResponse;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
-import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.dto.response.TaskTitleAndDecsResponse;
-import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.DtoService;
+
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.taskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +18,15 @@ public class taskController {
     @Autowired
     private taskService service;
 
-    @Autowired
-    private DtoService DtoService;
 
 
     @GetMapping("/task")
-    public ResponseEntity<List<TaskTitleAndDecsResponse>> getAllTask(@RequestParam String username){
-        List<TaskTitleAndDecsResponse> tasks = service.getAllTask(username);
+    public ResponseEntity<List<Task>> getAllTask(@RequestParam String username){
+        List<Task> tasks = service.getAllTask(username);
         return ResponseEntity.ok(tasks);
     }
 
-    @GetMapping("task/{id}")
+    @GetMapping("/task/{id}")
     public ResponseEntity<?> getTask(@PathVariable int id){
 
         Task task = service.getTask(id);
@@ -41,13 +39,13 @@ public class taskController {
         return new ResponseEntity<>("Inserted", HttpStatus.CREATED);
     }
 
-    @PutMapping("task")
+    @PutMapping("/task")
     public ResponseEntity<String> updateTask(@RequestBody Task task){
         service.updateOrInsertTask(task);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
-    @DeleteMapping("task/{id}")
+    @DeleteMapping("/task/{id}")
     public ResponseEntity<?> DeleteTask(@PathVariable int id){
         service.deleteTask(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);

@@ -24,6 +24,10 @@ public class userDetailService implements UserDetailsService {
         if(user == null)
             throw new UsernameNotFoundException("NOT FOUND");
 
+//        if(user.getRole() == null){
+//            throw new UsernameNotFoundException("NO ROLE ASSIGNED");
+//        }
+
         return new UserPrinciple(user);
     }
 }

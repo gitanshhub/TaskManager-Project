@@ -1,6 +1,7 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
+    @JsonIgnore
     private user assignedTo;
 
     @PrePersist

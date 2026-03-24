@@ -19,10 +19,10 @@ public class userController {
     private userService service;
 
     @GetMapping("/register")
-    public ResponseEntity<List<user>> ViewAllUsers(){
-        List<user> user = service.ViewAllUsers();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public List<user> getUsers(){
+        return service.getUsers();
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<String> RegisterUser(@RequestBody user user) {
