@@ -29,9 +29,14 @@ public class Task {
     private LocalDate createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_user_id")
+    @JoinColumn(name = "assigned_user_id", nullable = false)
     @JsonIgnore
     private user assignedTo;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    @JsonIgnore
+    private user createdBy;
 
     @PrePersist
     protected void onCreatedAt(){

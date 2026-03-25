@@ -6,147 +6,144 @@
     <title>TaskFlow Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="dashboard-body">
-<main class="dashboard-shell">
-    <header class="dashboard-topbar">
-        <div>
-            <div class="section-eyebrow">TaskFlow Dashboard</div>
-            <h1>Task management workspace</h1>
-            <p class="topbar-copy">View every task after login and manage each action in its own professional section.</p>
-        </div>
-
-        <div class="topbar-actions">
-            <div class="user-pill">
-                <span class="user-pill-label">Signed in as</span>
-                <strong id="currentUser">User</strong>
+<body class="dashboard-body neo-dashboard-body">
+<main class="neo-shell">
+    <aside class="neo-sidebar">
+        <div class="neo-brand">
+            <span class="neo-brand-mark">TF</span>
+            <div>
+                <h2>TaskManager</h2>
+                <p>Workspace</p>
             </div>
-            <button id="logoutBtn" type="button" class="secondary-btn">Logout</button>
         </div>
-    </header>
 
-    <section class="dashboard-grid">
-        <aside class="control-panel">
-            <article class="panel-card">
-                <div class="card-header">
-                    <div>
-                        <div class="section-eyebrow">Tasks</div>
-                        <h2>All tasks</h2>
-                    </div>
-                    <button id="loadTasksBtn" type="button" class="primary-btn">Refresh</button>
-                </div>
-                <p class="card-copy">Load the latest task list from the API and review everything in one place.</p>
+        <nav class="neo-nav">
+            <button type="button" class="neo-nav-item active">Dashboard</button>
+            <button type="button" class="neo-nav-item">Tasks</button>
+            <button type="button" class="neo-nav-item">Settings</button>
+        </nav>
+
+        <div class="neo-session">
+            <div class="neo-session-label">Signed in as</div>
+            <strong id="currentUser">User</strong>
+        </div>
+
+        <div class="neo-sidebar-actions">
+            <button id="loadTasksBtn" type="button" class="neo-sidebar-btn primary">Refresh</button>
+            <button id="logoutBtn" type="button" class="neo-sidebar-btn">Logout</button>
+        </div>
+    </aside>
+
+    <section class="neo-main">
+        <header class="neo-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Manage visible tasks, update assignments, and keep work moving.</p>
+            </div>
+            <label class="neo-search">
+                <span>Search</span>
+                <input id="taskSearch" type="text" placeholder="Search tasks...">
+            </label>
+        </header>
+
+        <section class="neo-stats">
+            <article class="neo-stat-card">
+                <p>Total Tasks</p>
+                <h2 id="statVisibleTasks">0</h2>
             </article>
+            <article class="neo-stat-card">
+                <p>Created By You</p>
+                <h2 id="statCreatedTasks">0</h2>
+            </article>
+            <article class="neo-stat-card">
+                <p>Assigned To You</p>
+                <h2 id="statAssignedTasks">0</h2>
+            </article>
+            <article class="neo-stat-card">
+                <p>Overdue</p>
+                <h2 id="statOverdueTasks">0</h2>
+            </article>
+        </section>
 
-            <article class="panel-card">
-                <div class="card-header">
+        <section class="neo-forms">
+            <article class="neo-panel">
+                <div class="neo-panel-head">
                     <div>
-                        <div class="section-eyebrow">Create</div>
-                        <h2>Create a task</h2>
+                        <span class="neo-panel-label">Create</span>
+                        <h3>Create Task</h3>
                     </div>
                 </div>
-                <form id="createTaskForm" class="form-stack">
-                    <label class="input-stack">
-                        <span>Title</span>
-                        <input id="createTitle" type="text" placeholder="Prepare sprint summary" required>
-                    </label>
-                    <label class="input-stack">
-                        <span>Description</span>
-                        <textarea id="createDescription" rows="3" placeholder="Add task details"></textarea>
-                    </label>
-                    <div class="dual-field">
-                        <label class="input-stack">
-                            <span>Priority</span>
-                            <select id="createPriority">
-                                <option value="">Not set</option>
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
-                        </label>
-                        <label class="input-stack">
-                            <span>Due date</span>
-                            <input id="createDueDate" type="date">
-                        </label>
-                    </div>
-                    <button type="submit" class="primary-btn wide-btn">Create task</button>
+                <form id="createTaskForm" class="neo-form-grid">
+                    <input id="createTitle" type="text" placeholder="Task title" required>
+                    <input id="createDescription" type="text" placeholder="Description">
+                    <select id="createPriority">
+                        <option value="">Priority</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <input id="createDueDate" type="date">
+                    <input id="createAssignedUsername" type="text" placeholder="Assign to username">
+                    <button type="submit" class="neo-primary-btn">Add</button>
                 </form>
             </article>
 
-            <article class="panel-card">
-                <div class="card-header">
+            <article class="neo-panel">
+                <div class="neo-panel-head">
                     <div>
-                        <div class="section-eyebrow">Update</div>
-                        <h2>Update a task</h2>
+                        <span class="neo-panel-label">Update</span>
+                        <h3>Edit Task</h3>
                     </div>
-                    <button id="fetchTaskBtn" type="button" class="secondary-btn">Fetch by ID</button>
+                    <button id="fetchTaskBtn" type="button" class="neo-secondary-btn">Load</button>
                 </div>
-                <form id="updateTaskForm" class="form-stack">
-                    <label class="input-stack">
-                        <span>Task ID</span>
-                        <input id="updateTaskId" type="number" min="1" placeholder="Enter task ID" required>
-                    </label>
-                    <label class="input-stack">
-                        <span>Title</span>
-                        <input id="updateTitle" type="text" placeholder="Task title" required>
-                    </label>
-                    <label class="input-stack">
-                        <span>Description</span>
-                        <textarea id="updateDescription" rows="3" placeholder="Task description"></textarea>
-                    </label>
-                    <div class="dual-field">
-                        <label class="input-stack">
-                            <span>Priority</span>
-                            <select id="updatePriority">
-                                <option value="">Not set</option>
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
-                        </label>
-                        <label class="input-stack">
-                            <span>Due date</span>
-                            <input id="updateDueDate" type="date">
-                        </label>
-                    </div>
-                    <button type="submit" class="primary-btn wide-btn">Update task</button>
+                <form id="updateTaskForm" class="neo-form-grid">
+                    <input id="updateTaskId" type="number" min="1" placeholder="Task ID" required>
+                    <input id="updateTitle" type="text" placeholder="Task title" required>
+                    <input id="updateDescription" type="text" placeholder="Description">
+                    <select id="updatePriority">
+                        <option value="">Priority</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <input id="updateDueDate" type="date">
+                    <input id="updateAssignedUsername" type="text" placeholder="Assign to username">
+                    <button type="submit" class="neo-primary-btn">Update</button>
                 </form>
             </article>
 
-            <article class="panel-card danger-card">
-                <div class="card-header">
+            <article class="neo-panel neo-panel-delete">
+                <div class="neo-panel-head">
                     <div>
-                        <div class="section-eyebrow">Delete</div>
-                        <h2>Delete a task</h2>
+                        <span class="neo-panel-label">Delete</span>
+                        <h3>Remove Task</h3>
                     </div>
                 </div>
-                <form id="deleteTaskForm" class="form-stack">
-                    <label class="input-stack">
-                        <span>Task ID</span>
-                        <input id="deleteTaskId" type="number" min="1" placeholder="Enter task ID to remove" required>
-                    </label>
-                    <button type="submit" class="danger-btn wide-btn">Delete task</button>
+                <form id="deleteTaskForm" class="neo-delete-form">
+                    <input id="deleteTaskId" type="number" min="1" placeholder="Task ID to remove" required>
+                    <button type="submit" class="neo-danger-btn">Delete</button>
                 </form>
             </article>
-        </aside>
+        </section>
 
-        <section class="results-panel">
-            <div class="results-toolbar">
+        <section class="neo-table-panel">
+            <div class="neo-table-head">
                 <div>
-                    <div class="section-eyebrow">Overview</div>
-                    <h2>Task list</h2>
-                    <p id="taskCount" class="results-copy">No tasks loaded yet.</p>
+                    <span class="neo-panel-label">Task List</span>
+                    <h3>Visible Tasks</h3>
+                    <p id="taskCount" class="neo-table-copy">No tasks loaded yet.</p>
                 </div>
                 <div id="dashboardMessage" class="inline-message compact-message" aria-live="polite"></div>
             </div>
 
-            <div id="results" class="task-grid"></div>
+            <div id="results" class="neo-results"></div>
         </section>
     </section>
 </main>
 
-<script src="/app.js?v=2"></script>
+<script src="/app.js?v=4"></script>
 </body>
 </html>

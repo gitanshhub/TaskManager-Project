@@ -81,16 +81,12 @@
         if (username.length < 3) {
             throw new Error("Username must be at least 3 characters long.");
         }
-
-        if (password.length < 4) {
-            throw new Error("Password must be at least 4 characters long.");
-        }
     }
 
     async function tryLogin(username, password) {
         const authHeader = "Basic " + btoa(username + ":" + password);
         const normalizedUsername = username.trim().toLowerCase();
-        const response = await fetch(`/task?username=${encodeURIComponent(normalizedUsername)}`, {
+        const response = await fetch("/task", {
             headers: {
                 Authorization: authHeader
             }

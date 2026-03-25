@@ -10,4 +10,8 @@ import java.util.List;
 public interface taskRepo extends JpaRepository<Task, Integer> {
     List<Task> findByAssignedToUsername(String username);
 
+    List<Task> findByCreatedByUsername(String username);
+
+    List<Task> findByCreatedByUsernameOrAssignedToUsername(String createdByusername, String assignedToUsername);
+
 }

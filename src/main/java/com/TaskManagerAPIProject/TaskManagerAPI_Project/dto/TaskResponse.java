@@ -1,9 +1,5 @@
-package com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.dto;
+package com.TaskManagerAPIProject.TaskManagerAPI_Project.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,17 +7,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TaskResponse {
 
+    private Integer id;
     private String title;
     private String description;
     private String priority;
     private LocalDate dueDate;
-
+    private String assignedUsername;
+    private String createdByUsername;
 }
-
-
-
-

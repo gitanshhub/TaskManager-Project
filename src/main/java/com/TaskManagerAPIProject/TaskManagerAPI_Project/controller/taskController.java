@@ -1,6 +1,8 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.controller;
 
-import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.dto.TaskResponse;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.dto.TaskResponse;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.dto.CreateTaskRequest;
+import com.TaskManagerAPIProject.TaskManagerAPI_Project.dto.UpdateTaskRequest;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
 
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.service.taskService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -21,33 +24,39 @@ public class taskController {
 
 
     @GetMapping("/task")
-    public ResponseEntity<List<Task>> getAllTask(@RequestParam String username){
-        List<Task> tasks = service.getAllTask(username);
+    public ResponseEntity<List<TaskResponse>> getAllTask(Principal principal){
+        String username = principal.getName();
+        List<TaskResponse> tasks = service.getAllTask(username);
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/task/{id}")
-    public ResponseEntity<?> getTask(@PathVariable int id){
-
-        Task task = service.getTask(id);
+    public ResponseEntity<TaskResponse> getTask(@PathVariable int id, Principal principal){
+        TaskResponse task = service.getTask(id, principal.getName());
         return ResponseEntity.ok(task);
     }
 
     @PostMapping("/task")
-    public ResponseEntity<String> insertTask(@RequestBody Task task, @RequestParam String username ){
-        service.InsertTask(task, username);
+    public ResponseEntity<String> insertTask(@RequestBody CreateTaskRequest task,
+                                             Principal principal)
+    {
+
+        service.InsertTask(task, principal.getName());
         return new ResponseEntity<>("Inserted", HttpStatus.CREATED);
     }
 
-    @PutMapping("/task")
-    public ResponseEntity<String> updateTask(@RequestBody Task task){
-        service.updateOrInsertTask(task);
+    @PutMapping("/task/{id}")
+    public ResponseEntity<String> updateTask(@PathVariable int id,
+                                             @RequestBody UpdateTaskRequest task,
+                                             Principal principal)
+    {
+        service.updateTask(id, task, principal.getName());
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
     @DeleteMapping("/task/{id}")
-    public ResponseEntity<?> DeleteTask(@PathVariable int id){
-        service.deleteTask(id);
+    public ResponseEntity<?> DeleteTask(@PathVariable int id, Principal principal){
+        service.deleteTask(id, principal.getName());
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 }
