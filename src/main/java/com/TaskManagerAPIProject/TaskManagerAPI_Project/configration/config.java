@@ -25,12 +25,14 @@ public class config {
     private userDetailService userDetailService;
 
     @Bean
+    // Uses BCrypt so stored passwords are hashed instead of persisted in plain text.
     public PasswordEncoder passwordEncoder() {
 
         return new BCryptPasswordEncoder(12);
     }
 
     @Bean
+    // Connects Spring Security authentication to the custom user details service.
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -39,6 +41,7 @@ public class config {
 
 
     @Bean
+    // Configures stateless basic-auth security and endpoint-level access rules.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
         http

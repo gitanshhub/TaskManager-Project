@@ -18,6 +18,7 @@ public class userDetailService implements UserDetailsService {
 
 
     @Override
+    // Supplies Spring Security with the user record used during authentication.
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         user user = userRepo.findByUsername(username);
 

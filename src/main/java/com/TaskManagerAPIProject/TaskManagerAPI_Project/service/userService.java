@@ -21,6 +21,7 @@ public class userService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Registers a new user with a normalized username, encoded password, and default USER role.
     public void RegisterUser(user user) {
         user.setUsername(user.getUsername().trim().toLowerCase());
 
@@ -36,6 +37,7 @@ public class userService {
     }
 
 
+    // Returns all users stored in the database.
     public List<user> getUsers() {
        return repo.findAll();
     }

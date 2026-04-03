@@ -1,5 +1,11 @@
 package com.TaskManagerAPIProject.TaskManagerAPI_Project.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.UserRepo;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.Repository.taskRepo;
@@ -9,12 +15,6 @@ import com.TaskManagerAPIProject.TaskManagerAPI_Project.dto.UpdateTaskRequest;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.Task;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.role.Role;
 import com.TaskManagerAPIProject.TaskManagerAPI_Project.model.user;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 public class taskService {
@@ -25,6 +25,7 @@ public class taskService {
     @Autowired
     private UserRepo userRepo;
 
+    // Returns tasks created by the user or assigned to the user.
     public List<TaskResponse> getAllTask(String username){
         user user = getUserByUsername(username);
 
@@ -40,6 +41,7 @@ public class taskService {
                 .map(this::mapToResponse).toList();
     }
 
+    // Loads one task and enforces read access for the requesting user.
     public TaskResponse getTask(int id, String username){
         user user = getUserByUsername(username);
         Task task = getTaskById(id);
@@ -52,6 +54,7 @@ public class taskService {
 
     }
 
+    // Creates a task and applies assignment rules based on the caller's role.
     public void InsertTask(CreateTaskRequest task, String username){
         user user = getUserByUsername(username);
 
@@ -74,6 +77,7 @@ public class taskService {
 
     }
 
+    // Updates basic task fields and allows reassignment only for admins.
     public void updateTask(int id, UpdateTaskRequest task, String username) {
         user user = getUserByUsername(username);
         Task existingTask = getTaskById(id);
@@ -95,6 +99,7 @@ public class taskService {
     }
 
 
+    // Deletes a task after checking write permissions.
     public void deleteTask(int id, String username){
 
         user user = getUserByUsername(username);
@@ -109,7 +114,7 @@ public class taskService {
     }
 
 
-
+    // Normalizes user lookup through the repository and fails with 404 if missing.
     private user getUserByUsername(String username){
         user user = userRepo.findByUsername(username.trim().toLowerCase());
 
@@ -120,15 +125,18 @@ public class taskService {
         return user;
     }
 
+    // Retrieves a task by id or throws 404 when it does not exist.
     private Task getTaskById(int id){
         return taskRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    // Role helper used by read/write permission checks.
     private boolean isAdmin(user user){
         return user.getRole().contains(Role.ADMIN);
     }
 
+    // A task can be read by its creator or the user it is assigned to.
     private boolean canReadTask(user user, Task task){
 //        if(isAdmin(user)){
 //            return true;
@@ -137,6 +145,7 @@ public class taskService {
                 || task.getAssignedTo().getUsername().equals(user.getUsername());
     }
 
+    // Only admins or the original creator can modify a task.
     private boolean canModify(user user, Task task){
         if(isAdmin(user)){
             return true;
@@ -145,6 +154,7 @@ public class taskService {
         return task.getCreatedBy().getUsername().equals(user.getUsername());
     }
 
+    // Converts the entity to the API response shape returned by the controller.
     private TaskResponse mapToResponse(Task task){
         return new TaskResponse(
                 task.getId(),
@@ -157,6 +167,7 @@ public class taskService {
         );
     }
 
+    // Admin task creation can target another user; otherwise the admin keeps ownership.
     private user getAssignedUserForAdmin(String assignedUsername, user user){
         if(assignedUsername == null || assignedUsername.isBlank()){
             return user;

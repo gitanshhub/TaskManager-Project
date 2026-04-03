@@ -18,12 +18,13 @@ public class userController {
     @Autowired
     private userService service;
 
+    // Returns all registered users.
     @GetMapping("/register")
     public List<user> getUsers(){
         return service.getUsers();
     }
 
-
+    // Registers a new user after username normalization and password encoding.
     @PostMapping("/register")
     public ResponseEntity<String> RegisterUser(@RequestBody user user) {
         service.RegisterUser(user);
