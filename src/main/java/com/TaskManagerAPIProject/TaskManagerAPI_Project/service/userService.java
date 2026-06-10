@@ -19,12 +19,6 @@ public class userService {
     private  PasswordDecryptAndEncrypt passwordDecryptAndEncrypt = new PasswordDecryptAndEncrypt();
 
 
-
-    public List<user> ViewAllUsers() {
-        return repo.findAll();
-
-    }
-
     public void RegisterUser(user user) {
         user.setUsername(user.getUsername().trim().toLowerCase());
 
