@@ -18,11 +18,6 @@ public class userController {
     @Autowired
     private userService service;
 
-    @GetMapping("/register")
-    public ResponseEntity<List<user>> ViewAllUsers(){
-        List<user> user = service.ViewAllUsers();
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
     @PostMapping("/register")
     public ResponseEntity<String> RegisterUser(@RequestBody user user) {
