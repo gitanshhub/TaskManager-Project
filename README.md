@@ -109,6 +109,14 @@ Example task request:
 
 `assignedUsername` is applied only for admins. A normal user's new tasks are automatically assigned to that user.
 
+### Access rules
+
+- An admin can assign a task to another user.
+- A user can see tasks they created and tasks assigned to them.
+- A user can update or delete only tasks they created.
+- The current project has no task status, completion, or work-update feature. An assigned user cannot mark an admin-created task as completed yet.
+- An admin can update or delete any task, but the current list endpoint shows only tasks the admin created or is assigned to.
+
 ## Project Structure
 
 ```text
